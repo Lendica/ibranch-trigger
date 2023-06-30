@@ -1,6 +1,6 @@
 {
   "name": "@lendica/ibranchtrigger",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Lendica iBranch trigger for FundNow and PayLater",
   "main": "build/index.js",
   "module": "build/index.js",

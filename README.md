@@ -17,9 +17,12 @@ npm i @lendica/ibranchtrigger
 
 
 ## Usage
+If you’re using the npm package, import the library first.
+```js
+import '@lendica/ibranchtrigger';
+```
 
 Use the component as native HTML tags:
-
 ```html
 <!-- Pass bill id and invoice id as strings -->
 
@@ -36,12 +39,20 @@ Use the component as native HTML tags:
 ```
 
 #### Overriding button onclick handler
+If you wish to add additional logic prior to opening the ibranch, you can pass an onlick handler as follows:
 ```html
 <!-- Default onclick checks if lendica is ready, takes the bill or invoice id provided and opens 
 	the offer terms in iBranch. Override to implement additional logic.
 	Refer to iBranch API for all available methods. -->
 
-<paylater-trigger onclick="console.log('override onclick')"></paylater-trigger>
+<script>
+	const handlePaylaterClick = () => {
+		// ...apply additional logic
+		console.log('override onclick!');
+		lendica.ibranch.openPayLater('partner_bill_uuid');
+	};
+</script>
+<paylater-trigger onclick="handlePaylaterClick"></paylater-trigger>
 ```
 
 #### Overriding primary color
