@@ -2,7 +2,7 @@
 
 FundNow and PayLater button web component to open invoice payment term offers in iBranch.
 
-[![npm version](https://img.shields.io/badge/npm-v0.0.1-8c8ca1)](https://www.npmjs.com/package/@lendica/ibranchtrigger)
+[![npm version](https://img.shields.io/badge/npm-v1.0.0-8c8ca1)](https://www.npmjs.com/package/@lendica/ibranchtrigger)
 
 ## Installation
 
