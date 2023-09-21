@@ -1,9 +1,8 @@
-const plTemplate = document.createElement('template');
+const plTemplate = document.createElement("template");
 
-const makePLTemplate = elem => {
-    const billId = elem.getAttribute('bill-id');
-    const color = elem.getAttribute('color') || '#3c41e7';
-    plTemplate.setAttribute('id', 'paylater-trigger');
+const makePLTemplate = (elem) => {
+    const color = elem.getAttribute("color") || "#3c41e7";
+    plTemplate.setAttribute("id", "paylater-trigger");
     plTemplate.innerHTML = `
     <style>
         :host * {
@@ -99,15 +98,19 @@ const makePLTemplate = elem => {
 class PayLaterTrigger extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: 'open' });
+        this.attachShadow({ mode: "open" });
         makePLTemplate(this);
         this.shadowRoot.appendChild(plTemplate.content.cloneNode(true));
     }
 
     handleTriggerClick(e) {
         e.preventDefault();
-        if (!!window.lendica && window.lendica.isInitialized && this.hasValidBillId) {
-            window.lendica.ibranch.openPayLater(this.billId);
+        if (
+            !!window.lendica &&
+            window.lendica.isInitialized &&
+            this.hasValidBillId
+        ) {
+            window.lendica.ibranch.openPayLater(this.billId, this.total);
         } else if (!!window.lendica) {
             window.lendica.ibranch.open();
         }
@@ -115,7 +118,11 @@ class PayLaterTrigger extends HTMLElement {
 
     handleInfoClick(e) {
         e.preventDefault();
-        if (!!window.lendica && window.lendica.isInitialized && this.hasValidBillId) {
+        if (
+            !!window.lendica &&
+            window.lendica.isInitialized &&
+            this.hasValidBillId
+        ) {
             window.lendica.ibranch.open(`learn-more`);
         } else if (!!window.lendica) {
             window.lendica.ibranch.open();
@@ -124,42 +131,72 @@ class PayLaterTrigger extends HTMLElement {
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (newValue !== oldValue) {
-            if (name === 'bill-id') {
+            if (name === "bill-id") {
                 this.billId = newValue;
+            }
+            if (name === "total") {
+                this.total = this.processTotal(newValue);
             }
         }
     }
 
     connectedCallback() {
         this.shadowRoot
-            .querySelector('.trigger-button')
+            .querySelector(".trigger-button")
             .addEventListener(
-                'click',
-                this.hasAttribute('onclick') && typeof this.getAttribute('onclick') === 'function'
-                    ? this.getAttribute('onclick')
+                "click",
+                this.hasAttribute("onclick") &&
+                    typeof this.getAttribute("onclick") === "function"
+                    ? this.getAttribute("onclick")
                     : this.handleTriggerClick.bind(this)
             );
 
         this.shadowRoot
-            .querySelector('.icon')
-            .addEventListener('click', this.handleInfoClick.bind(this));
+            .querySelector(".icon")
+            .addEventListener("click", this.handleInfoClick.bind(this));
     }
 
     get hasValidBillId() {
-        return this.hasAttribute('bill-id') && !!this.billId && typeof this.billId === 'string';
+        return (
+            this.hasAttribute("bill-id") &&
+            !!this.billId &&
+            typeof this.billId === "string"
+        );
     }
 
     get billId() {
-        return this.getAttribute('bill-id');
+        return this.getAttribute("bill-id");
     }
 
     set billId(value) {
-        this.setAttribute('bill-id', value);
+        this.setAttribute("bill-id", value);
+    }
+
+    get total() {
+        return this.getAttribute("total");
+    }
+
+    set total(value) {
+        this.setAttribute("total", value);
+    }
+
+    processTotal(total) {
+        if (total && typeof total === "string") {
+            const parsedTotal = parseFloat(total.replace(/[^\d.]/g, ""));
+            if (isNaN(parsedTotal)) {
+                return undefined;
+            }
+            return parsedTotal.toFixed(2);
+        }
+        if (total && typeof total === "number") {
+            return Math.abs(total).toFixed(2);
+        }
+        return undefined;
     }
 
     static get observedAttributes() {
-        return ['bill-id', 'color'];
+        return ["bill-id", "total", "color"];
     }
 }
 
-window.customElements.define('paylater-trigger', PayLaterTrigger);
+window.customElements.define("paylater-trigger", PayLaterTrigger);

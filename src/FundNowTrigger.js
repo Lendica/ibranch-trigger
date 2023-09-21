@@ -1,9 +1,8 @@
-const fnTemplate = document.createElement('template');
+const fnTemplate = document.createElement("template");
 
-const makeFNTemplate = elem => {
-    const invoiceId = elem.getAttribute('invoice-id');
-    const color = elem.getAttribute('color') || '#3c41e7';
-    fnTemplate.setAttribute('id', 'fundnow-trigger');
+const makeFNTemplate = (elem) => {
+    const color = elem.getAttribute("color") || "#3c41e7";
+    fnTemplate.setAttribute("id", "fundnow-trigger");
     fnTemplate.innerHTML = `
     <style>
         :host * {
@@ -99,15 +98,19 @@ const makeFNTemplate = elem => {
 class FundNowTrigger extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: 'open' });
+        this.attachShadow({ mode: "open" });
         makeFNTemplate(this);
         this.shadowRoot.appendChild(fnTemplate.content.cloneNode(true));
     }
 
     handleTriggerClick(e) {
         e.preventDefault();
-        if (!!window.lendica && window.lendica.isInitialized && this.hasValidInvoiceId) {
-            window.lendica.ibranch.openFundNow(this.invoiceId);
+        if (
+            !!window.lendica &&
+            window.lendica.isInitialized &&
+            this.hasValidInvoiceId
+        ) {
+            window.lendica.ibranch.openFundNow(this.invoiceId, this.total);
         } else if (!!window.lendica) {
             window.lendica.ibranch.open();
         }
@@ -115,7 +118,11 @@ class FundNowTrigger extends HTMLElement {
 
     handleInfoClick(e) {
         e.preventDefault();
-        if (!!window.lendica && window.lendica.isInitialized && this.hasValidInvoiceId) {
+        if (
+            !!window.lendica &&
+            window.lendica.isInitialized &&
+            this.hasValidInvoiceId
+        ) {
             window.lendica.ibranch.open(`learn-more`);
         } else if (!!window.lendica) {
             window.lendica.ibranch.open();
@@ -124,46 +131,72 @@ class FundNowTrigger extends HTMLElement {
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (newValue !== oldValue) {
-            if (name === 'invoice-id') {
+            if (name === "invoice-id") {
                 this.invoiceId = newValue;
+            }
+            if (name === "total") {
+                this.total = this.processTotal(newValue);
             }
         }
     }
 
     connectedCallback() {
         this.shadowRoot
-            .querySelector('.trigger-button')
+            .querySelector(".trigger-button")
             .addEventListener(
-                'click',
-                this.hasAttribute('onclick') && typeof this.getAttribute('onclick') === 'function'
-                    ? this.getAttribute('onclick')
+                "click",
+                this.hasAttribute("onclick") &&
+                    typeof this.getAttribute("onclick") === "function"
+                    ? this.getAttribute("onclick")
                     : this.handleTriggerClick.bind(this)
             );
 
         this.shadowRoot
-            .querySelector('.icon')
-            .addEventListener('click', this.handleInfoClick.bind(this));
+            .querySelector(".icon")
+            .addEventListener("click", this.handleInfoClick.bind(this));
     }
 
     get hasValidInvoiceId() {
         return (
-            this.hasAttribute('invoice-id') &&
+            this.hasAttribute("invoice-id") &&
             !!this.invoiceId &&
-            typeof this.invoiceId === 'string'
+            typeof this.invoiceId === "string"
         );
     }
 
     get invoiceId() {
-        return this.getAttribute('invoice-id');
+        return this.getAttribute("invoice-id");
     }
 
     set invoiceId(value) {
-        this.setAttribute('invoice-id', value);
+        this.setAttribute("invoice-id", value);
+    }
+
+    get total() {
+        return this.getAttribute("total");
+    }
+
+    set total(value) {
+        this.setAttribute("total", value);
+    }
+
+    processTotal(total) {
+        if (total && typeof total === "string") {
+            const parsedTotal = parseFloat(total.replace(/[^\d.]/g, ""));
+            if (isNaN(parsedTotal)) {
+                return undefined;
+            }
+            return parsedTotal.toFixed(2);
+        }
+        if (total && typeof total === "number") {
+            return Math.abs(total).toFixed(2);
+        }
+        return undefined;
     }
 
     static get observedAttributes() {
-        return ['invoice-id', 'color'];
+        return ["invoice-id", "total", "color"];
     }
 }
 
-window.customElements.define('fundnow-trigger', FundNowTrigger);
+window.customElements.define("fundnow-trigger", FundNowTrigger);

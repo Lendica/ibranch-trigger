@@ -1,27 +1,26 @@
 {
-  "name": "@lendica/ibranchtrigger",
-  "version": "1.0.1",
-  "description": "Lendica iBranch trigger for FundNow and PayLater",
-  "main": "build/index.js",
-  "module": "build/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src -d build"
-  },
-  "author": "Lendica Corp.",
-  "license": "LGPL-3.0-or-later",
-  "devDependencies": {
-    "@babel/cli": "^7.16.7",
-    "@babel/preset-env": "^7.16.7"
-  },
-  "dependencies": {
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Lendica/ibranch-trigger.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Lendica/ibranch-trigger/issues"
-  },
-  "homepage": "https://github.com/Lendica/ibranch-trigger#readme"
+    "name": "@lendica/ibranchtrigger",
+    "version": "1.1.0",
+    "description": "Lendica iBranch trigger for FundNow and PayLater",
+    "main": "build/index.js",
+    "module": "build/index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "babel src -d build"
+    },
+    "author": "Lendica Corp.",
+    "license": "LGPL-3.0-or-later",
+    "devDependencies": {
+        "@babel/cli": "^7.16.7",
+        "@babel/preset-env": "^7.16.7"
+    },
+    "dependencies": {},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Lendica/ibranch-trigger.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Lendica/ibranch-trigger/issues"
+    },
+    "homepage": "https://github.com/Lendica/ibranch-trigger#readme"
 }
